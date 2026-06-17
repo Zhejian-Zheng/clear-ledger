@@ -3,6 +3,7 @@ package com.clearledger.clearledger.controller;
 import com.clearledger.clearledger.dto.CreateTransactionRequest;
 import com.clearledger.clearledger.dto.TransactionResponse;
 import com.clearledger.clearledger.service.TransactionService;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class TransactionController {
     }
 
     @PostMapping
-    public TransactionResponse createTransaction(@RequestBody CreateTransactionRequest request) {
+    public TransactionResponse createTransaction(@Valid @RequestBody CreateTransactionRequest request) {
         return transactionService.createTransaction(request);
     }
 
