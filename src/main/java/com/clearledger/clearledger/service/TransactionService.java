@@ -5,6 +5,7 @@ import com.clearledger.clearledger.dto.SummaryResponse;
 import com.clearledger.clearledger.dto.TransactionResponse;
 import com.clearledger.clearledger.entity.Transaction;
 import com.clearledger.clearledger.entity.TransactionType;
+import com.clearledger.clearledger.exception.ResourceNotFoundException;
 import com.clearledger.clearledger.repository.TransactionRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,12 +41,16 @@ public class TransactionService {
 
     public TransactionResponse getTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Transaction not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + id));
 
         return toResponse(transaction);
     }
 
     public void deleteTransaction(Long id) {
+        if (!transactionRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Transaction not found: " + id);
+        }
+
         transactionRepository.deleteById(id);
     }
 
