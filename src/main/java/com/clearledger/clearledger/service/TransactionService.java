@@ -10,6 +10,7 @@ import com.clearledger.clearledger.repository.TransactionRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TransactionService {
@@ -20,6 +21,7 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    @Transactional
     public TransactionResponse createTransaction(CreateTransactionRequest request) {
         Transaction transaction = new Transaction();
         transaction.setAmount(request.getAmount());
@@ -32,6 +34,7 @@ public class TransactionService {
         return toResponse(savedTransaction);
     }
 
+    @Transactional(readOnly = true)
     public List<TransactionResponse> getTransactions() {
         return transactionRepository.findAll()
                 .stream()
@@ -39,6 +42,7 @@ public class TransactionService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public TransactionResponse getTransaction(Long id) {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + id));
@@ -46,6 +50,7 @@ public class TransactionService {
         return toResponse(transaction);
     }
 
+    @Transactional
     public void deleteTransaction(Long id) {
         if (!transactionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Transaction not found: " + id);
@@ -54,6 +59,7 @@ public class TransactionService {
         transactionRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public SummaryResponse getSummary() {
         BigDecimal income = BigDecimal.ZERO;
         BigDecimal expense = BigDecimal.ZERO;
